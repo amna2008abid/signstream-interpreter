@@ -1,14 +1,16 @@
-# Welcome to your Lovable project
+# SignStream Interpreter
+
+hey so i want to make a website that assist deaf people who cannot hear as in when a deaf person plays a youtube vidoe and copy  its link or  upload avidoe on the webiste . the video plays and then a humiod comes and on left  corner is also interpreting the video for deaf peopl in sign languge as the video plays .
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/cb1678aa-d95c-49db-8e24-ee411416bd32).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +22,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
