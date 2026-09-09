@@ -18,7 +18,7 @@ function downsample(input: Float32Array, from: number, to: number): Float32Array
     const start = Math.floor(i * ratio);
     const end = Math.min(input.length, Math.floor((i + 1) * ratio));
     let sum = 0;
-    for (let j = start; j < end; j++) sum += input[j];
+    for (let j = start; j < end; j++) sum += input[j] ?? 0;
     out[i] = sum / Math.max(1, end - start);
   }
   return out;
@@ -130,7 +130,7 @@ export async function captureTabAudio(opts: {
     void ctx.close();
   };
 
-  stream.getAudioTracks()[0].addEventListener("ended", () => {
+  stream.getAudioTracks()[0]?.addEventListener("ended", () => {
     stop();
     opts.onEnded();
   });

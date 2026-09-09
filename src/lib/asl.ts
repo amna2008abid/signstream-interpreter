@@ -18,18 +18,18 @@ export type ArmFrame = {
   t: Vec3;
   shape: HandShape;
   /** extra wrist rotation (euler, radians) */
-  wrist?: Vec3;
+  wrist?: Vec3 | undefined;
 };
 
 export type Frame = {
   label: string;
   dur: number;
-  right?: ArmFrame;
-  left?: ArmFrame;
+  right?: ArmFrame | undefined;
+  left?: ArmFrame | undefined;
   /** eyebrow raise, -1..1 */
-  brow?: number;
+  brow?: number | undefined;
   /** mouth openness 0..1 */
-  mouth?: number;
+  mouth?: number | undefined;
 };
 
 const shape = (
@@ -37,7 +37,7 @@ const shape = (
   spread = 0.25,
 ): HandShape => ({ curls, spread });
 
-export const SHAPES: Record<string, HandShape> = {
+export const SHAPES = {
   fist: shape([0.9, 1, 1, 1, 1], 0),
   flat: shape([0.6, 0, 0, 0, 0], 0.05),
   open: shape([0, 0, 0, 0, 0], 0.5),
@@ -52,10 +52,10 @@ export const SHAPES: Record<string, HandShape> = {
   horns: shape([0, 1, 1, 1, 0], 0.3),
   cup: shape([0.35, 0.35, 0.35, 0.35, 0.35], 0.15),
   bent: shape([0.5, 0.55, 0.55, 0.55, 0.55], 0.1),
-};
+} satisfies Record<string, HandShape>;
 
 /** ASL manual alphabet, approximated with curls + wrist orientation. */
-export const LETTERS: Record<string, ArmFrame["shape"] & { wrist?: Vec3 }> = {
+export const LETTERS: Record<string, HandShape & { wrist?: Vec3 }> = {
   A: { ...shape([0, 1, 1, 1, 1], 0) },
   B: { ...shape([1, 0, 0, 0, 0], 0.02) },
   C: { ...shape([0.4, 0.4, 0.4, 0.4, 0.4], 0.12) },
@@ -110,8 +110,8 @@ const P = {
 export const REST_FRAME: Frame = {
   label: "",
   dur: 0.5,
-  right: { t: P.rest, shape: SHAPES.bent },
-  left: { t: P.restL, shape: SHAPES.bent },
+  right: { t: P.rest, shape: SHAPES["bent"] },
+  left: { t: P.restL, shape: SHAPES["bent"] },
   brow: 0,
   mouth: 0,
 };
@@ -538,9 +538,10 @@ export function textToFrames(text: string): Frame[] {
   for (const raw of text.split(/\s+/)) {
     const w = clean(raw);
     if (!w || SKIP.has(w)) continue;
-    const key = SIGNS[w] ? w : SYNONYMS[w] && SIGNS[SYNONYMS[w]] ? SYNONYMS[w] : null;
-    if (key) {
-      out.push(...SIGNS[key].map((f) => ({ ...f })));
+    const syn = SYNONYMS[w];
+    const dictEntry = SIGNS[w] ?? (syn ? SIGNS[syn] : undefined);
+    if (dictEntry) {
+      out.push(...dictEntry.map((f) => ({ ...f })));
       continue;
     }
     // Fingerspell anything we do not have a sign for.
@@ -549,11 +550,11 @@ export function textToFrames(text: string): Frame[] {
     for (const ch of letters) {
       const l = LETTERS[ch];
       if (!l) continue;
-      const { wrist, ...s } = l;
+      const { wrist, ...handShape } = l;
       out.push({
         label: `${w} · ${ch}`,
         dur: 0.28,
-        right: { t: P.spellPos, shape: s as HandShape, wrist },
+        right: { t: P.spellPos, shape: handShape, wrist },
       });
     }
   }
